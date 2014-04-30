@@ -1,0 +1,14 @@
+---
+#- name: Install Development tools
+#  shell: yum -y groupinstall "Development Tools"
+#  tags: development-tools
+
+- name: be sure ganglia-common packages are installed
+  yum: name={{item}} state=installed
+  with_items:
+    - rrdtool*
+    - apr-devel
+    - libconfuse-devel
+    - expat-devel
+    - pcre-devel
+  tags: ganglia-common-packages

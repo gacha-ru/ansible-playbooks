@@ -1,0 +1,7 @@
+---
+- hosts: all
+  sudo: yes
+  roles:
+    - nagios
+    - ganglia
+#- include: nagios.yml

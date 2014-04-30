@@ -1,0 +1,20 @@
+---
+- name: Install Development tools
+  shell: yum -y groupinstall "Development Tools"
+  tags: development-tools
+
+- name: be sure nagios-common packages are installed
+  yum: name={{item}} state=installed
+  with_items:
+    - wget
+    - httpd
+    - php
+    - gcc
+    - glibc
+    - glibc-common
+    - gd
+    - gd-devel
+    - make
+    - net-snmp
+    - rsyslog
+  tags: nagios-common-packages

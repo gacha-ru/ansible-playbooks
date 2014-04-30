@@ -1,0 +1,12 @@
+---
+- name: build and install ganglia-plugin
+  shell: |
+    chdir=/usr/local/src
+    if [ ! -f ganglia-web-{{ ganglia_web_version }}.tar.gz ]; then
+      wget http://sourceforge.net/projects/ganglia/files/ganglia-web/{{ ganglia_web_version }}/ganglia-web-{{ ganglia_web_version }}.tar.gz
+    fi
+    tar xfz ganglia-web-{{ ganglia_web_version }}.tar.gz
+    cd ganglia-web-{{ ganglia_web_version }}
+    sed -i -e "s/www-data/apache/g" Makefile
+    make
+    make install

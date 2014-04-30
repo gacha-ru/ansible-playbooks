@@ -1,0 +1,22 @@
+---
+- name: build and install nagios-core
+  shell: |
+    chdir=/usr/local/src
+    if [ ! -f nagios-{{ nagios_core_version }}.tar.gz ]; then
+      wget http://prdownloads.sourceforge.net/sourceforge/nagios/nagios-{{ nagios_core_version }}.tar.gz
+      tar xfz nagios-{{ nagios_core_version }}.tar.gz
+      cd nagios-{{ nagios_core_version }}
+      useradd nagios
+      groupadd nagcmd
+      usermod -a -G nagcmd nagios
+      ./configure --with-command-group=nagcmd
+        make all
+        make install
+        make install-init
+        make install-config
+        make install-commandmode
+        make install-webconf
+      cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/
+      chown -R nagios:nagios /usr/local/nagios/libexec/eventhandlers
+      htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagios
+    fi
