@@ -7,13 +7,7 @@
       tar xfz nagios-plugins-{{ nagios_plugin_version }}.tar.gz
     fi
 
-    /usr/local/nagios/bin/nagios --version
-
-    if [ 0 != `echo $?` ];then
-      cd nagios-plugins-{{ nagios_plugin_version }}
-      ./configure --with-nagios-user=nagios --with-nagios-group=nagios
-      make
-      make install
-    else
-      echo "not install"
-    fi
+    cd nagios-plugins-{{ nagios_plugin_version }}
+    ./configure --with-nagios-user=nagios --with-nagios-group=nagios
+    make
+    make install

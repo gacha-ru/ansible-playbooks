@@ -8,10 +8,16 @@
 - name: build and install ganglia-web
   shell: |
     chdir=/usr/local/src
-    creates=/usr/share/ganglia 
     tar xf ganglia-web-{{ ganglia_web_version }}.tar.gz &&
     cd ganglia-web-{{ ganglia_web_version }} &&
     make install APACHE_USER=apache GDESTDIR=/usr/share/ganglia
+
+#    creates=/usr/share/ganglia 
+
+- name: ganglia-web apache conf mv
+  shell: |
+    chdir=/usr/local/src/ganglia-web-{{ ganglia_web_version }}
+    mv apache.conf /etc/httpd/conf.d/ganglia.conf
 
 #- name: ganglia config file for nginx
 #  template: >

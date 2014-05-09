@@ -1,5 +1,5 @@
 ---
 - include: epel.yml
-#- include: common-packages.yml
-#- include: nagios-core-install.yml
-#- include: nagios-plugin-install.yml
+- include: common-packages.yml
+- include: nagios-core-install.yml
+- include: nagios-plugin-install.yml

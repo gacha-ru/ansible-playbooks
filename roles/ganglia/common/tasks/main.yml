@@ -2,7 +2,7 @@
 - include: rpmforge.yml
 
 - name: install dependent packages to build ganglia
-  yum: name={{ item }} state=present
+  yum: name={{ item }} enablerepo=rpmforge state=present
   with_items:
     - apr-devel
     - libconfuse-devel
