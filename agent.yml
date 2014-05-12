@@ -3,4 +3,3 @@
   sudo: yes
   roles:
     - monitoring-agent/gmond
-#- include: nagios.yml

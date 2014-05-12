@@ -1,5 +1,0 @@
----
-#- include: epel.yml
-- include: common-packages.yml
-- include: ganglia-core-install.yml
-- include: ganglia-web-install.yml
