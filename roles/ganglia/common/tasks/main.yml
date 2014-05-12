@@ -1,6 +1,4 @@
 ---
-- include: rpmforge.yml
-
 - name: install dependent packages to build ganglia
   yum: name={{ item }} enablerepo=rpmforge state=present
   with_items:
@@ -12,6 +10,7 @@
     - pcre-devel
     - rrdtool-devel
     - libselinux-python
+    - zlib-devel
 
 - name: create group for ganglia
   group: name=ganglia
