@@ -18,5 +18,5 @@
         make install-webconf
       cp -R contrib/eventhandlers/ /usr/local/nagios/libexec/
       chown -R nagios:nagios /usr/local/nagios/libexec/eventhandlers
-      htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin nagios
+      htpasswd -b -c /usr/local/nagios/etc/htpasswd.users nagiosadmin {{ admin_password }}
     fi

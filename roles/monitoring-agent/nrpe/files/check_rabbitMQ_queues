@@ -1,0 +1,96 @@
+#!/bin/sh
+
+# 終了コード
+OK=0
+WARNING=1
+CRITICAL=2
+UNKNOWN=3
+
+# 引数初期化
+uk_count=0
+uk_total=0
+
+# 引数処理
+if [ 6 != $# ];then
+  echo "Usage:-f [unack or total] -w [warning閾値] -c [critical閾値]"
+  exit ${UNKNOWN}
+fi
+
+while getopts f:w:c: opt
+do
+  case ${opt} in
+  f)
+    if [ ${OPTARG} = "unack" ] || [ ${OPTARG} = "total" ];then
+	flag=${OPTARG}
+    else
+	echo "Usage:-f [unack or total] -w [warning閾値] -c [critical閾値]"
+        exit 1
+    fi;;
+  w)
+    war=${OPTARG};;
+  c)
+    cri=${OPTARG};;  
+  \?)
+    echo "Usage:-f [unack or total] -w [warning閾値] -c [critical閾値]"
+    exit 1;;
+  esac
+done
+
+# version check
+rabbitmq_version=`ls /usr/lib/rabbitmq/lib/`
+
+case "${rabbitmq_version}" in
+    rabbitmq_server-2.* ) port=55672 ;;
+    rabbitmq_server-3.* ) port=15672 ;;
+esac
+
+# http APIにて値取得
+messages_ready=`curl -i -u guest:guest http://localhost:${port}/api/queues | \
+    sed -e "s/,/\n/g" | grep messages_ready | grep -v details | grep 1 | wc -l`
+messages_unacknowledge=`curl -i -u guest:guest http://localhost:${port}/api/queues | \
+    sed -e "s/,/\n/g" | grep messages_unacknowledge | grep -v details | \
+    grep -v ":0" | sed -e 's/:/ /g' | awk '{print $2}'`
+
+# unacknowledgeの足し算ループ
+for uk_count in `echo $messages_unacknowledge | sed 's/ /\n/g'`; do
+    uk_total=`expr $uk_total + $uk_count`
+done
+
+# flag check
+case "${flag}" in
+    unack ) messages_total=${uk_total} ;;
+    total ) messages_total=`expr ${messages_ready} + ${uk_total}` ;;
+esac
+
+#warning,critical閾値との比較(小数で比較するため)
+warcomparison=`echo "${messages_total} < ${war}" | bc`
+cricomparison=`echo "${messages_total} < ${cri}" | bc`
+
+# -w と-cの値を閾値とし判定
+if [ ${warcomparison} -eq 1 ];then
+    Result=${OK}
+    StatusDisplay="OK"
+elif [ ${cricomparison} -eq 1 ];then
+    Result=${WARNING}
+    StatusDisplay="WARNING"
+else
+    Result=${CRITICAL}
+    StatusDisplay="CRITICAL"
+fi
+
+# 変数Resultが 0,1,2,3 のどれかなら、それに応じたステータスを返し、終了します。
+# 0,1,2,3 以外であれば UNKNOWN 。
+case ${Result} in
+    "$OK" | "$WARNING" | "$CRITICAL")
+        case "${flag}" in
+            unack ) echo "** ${StatusDisplay}  unacknowledge:${uk_total} **" ;;
+            total ) echo "** ${StatusDisplay}  ready:${messages_ready} unacknowledge:${uk_total} Total:${messages_total} **" ;;
+        esac
+        exit ${Result} ;;
+    "$UNKNOWN")
+        echo "** UNKNOWN  ready:${messages_ready} unacknowledge:${uk_total} Total:${messages_total}**"
+        exit $UNKNOWN ;;
+    *)
+        echo "The argument ${messages_total} is not permitted."
+        exit $UNKNOWN ;;
+esac

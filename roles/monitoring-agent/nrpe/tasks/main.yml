@@ -1,14 +1,29 @@
 ---
-- name: Install ganglia-gmond
+- name: Install Nagios Agent NRPE
   yum: name={{item}} state=installed
   with_items:
-    - ganglia-gmond
-  tags: gagnglia-gmond
+    - nrpe
+  tags: nagios-nrpe
 
-- name: gmond config file
+- name: nrpe config file
   template: >
-     src=gmond.conf.j2
-     dest=/etc/ganglia/gmond.conf
-     owner=root
-     group=root
-     mode=0644
+    src=nrpe.cfg.j2
+    dest=/etc/nagios/nrpe.cfg
+    owner=root
+    group=root
+    mode=0644
+
+- name: nrpe command config file
+  template: >
+    src=command.cfg.j2
+    dest=/etc/nagios/command.cfg
+    owner=root
+    group=root
+    mode=0644
+
+- name: retrieve the list of home directories
+  copy: >
+    src=roles/monitoring-agent/nrpe/files/
+    dest=/usr/lib64/nagios/plugins/
+    owner=root
+    mode=755

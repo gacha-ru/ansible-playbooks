@@ -1,0 +1,56 @@
+#!/bin/sh
+
+# 終了コード
+OK=0
+WARNING=1
+CRITICAL=2
+UNKNOWN=3
+
+# 引数処理
+if [ 4 != $# ];then
+  echo "Usage:-w [warning閾値] -c [critical閾値]"
+  exit ${UNKNOWN}
+fi
+
+while getopts w:c: opt
+do
+  case ${opt} in
+  w)
+    war=${OPTARG};;
+  c)
+    cri=${OPTARG};;  
+  \?)
+    echo "Usage:-w [warning閾値] -c [critical閾値]"
+    exit 1;;
+  esac
+done
+
+cpu_user=`mpstat 1 3 | tail -1 | awk '{print $3}'`
+
+#warning,critical閾値との比較(小数で比較するため)
+warcomparison=`echo "${cpu_user} < ${war}" | bc`
+cricomparison=`echo "${cpu_user} < ${cri}" | bc`
+
+# -w と-cの値を閾値とし判定
+if [ ${warcomparison} -eq 1 ];then
+  Result=${OK}
+elif [ ${cricomparison} -eq 1 ];then
+  Result=${WARNING}
+else
+  Result=${CRITICAL}
+fi
+
+# 変数 cpu_user が 0,1,2,3 のどれかなら、それに応じたステータスを返し、終了します。
+# 0,1,2,3 以外であれば UNKNOWN 。
+case ${Result} in
+  0)  echo "** OK ${cpu_user} -w ${war} -c ${cri}**"
+      exit $OK ;;
+  1)  echo "** WARNING ${cpu_user} **"
+      exit $WARNING ;;
+  2)  echo "** CRITICAL ${cpu_user} **"
+      exit $CRITICAL ;;
+  3)  echo "** UNKNOWN  ${cpu_user}**"
+      exit $UNKNOWN ;;
+  *)  echo "The argument ${cpu_user} is not permitted."
+      exit $UNKNOWN ;;
+esac

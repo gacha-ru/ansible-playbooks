@@ -1,0 +1,48 @@
+command[notify-by-email]=/bin/printf "$OUTPUT$" | /bin/mail -s '$SERVICESTATE$ alert for $HOSTALIAS$/$SERVICEDESC$' $CONTACTEMAIL$
+command[notify-by-epager]=/bin/echo "$OUTPUT$" | /bin/mail -s '$HOSTALIAS$/$SERVICEDESC$ is $SERVICESTATE$' $CONTACTPAGER$
+command[host-notify-by-email]=/bin/echo -e "***** Nagios *****\n\nHost "$HOSTALIAS$" is $HOSTSTATE$!\n\nDate/Time: $DATETIME$\n" | /bin/mail -s 'Host $HOSTNAME$ is $HOSTSTATE$!' $CONTACTEMAIL$
+command[host-notify-by-epager]=/bin/echo '$HOSTALIAS$ is $HOSTSTATE$!' | /bin/mail -s 'Host $HOSTNAME$ is $HOSTSTATE$!' $CONTACTPAGER$
+
+command[check_tcp]=/usr/lib64/nagios/plugins/check_tcp -H $HOSTADDRESS$ -p $ARG1$ -t $ARG2$
+command[check_udp]=/usr/lib64/nagios/plugins/check_udp -H $HOSTADDRESS$ -p $ARG1$
+command[check_ftp]=/usr/lib64/nagios/plugins/check_ftp -H $HOSTADDRESS$
+command[check_pop]=/usr/lib64/nagios/plugins/check_pop -H $HOSTADDRESS$
+command[check_smtp]=/usr/lib64/nagios/plugins/check_smtp -H $HOSTADDRESS$
+command[check_nntp]=/usr/lib64/nagios/plugins/check_nntp -H $HOSTADDRESS$
+command[check_telnet]=/usr/lib64/nagios/plugins/check_tcp -H $HOSTADDRESS$ -p 23
+command[check_users]=/usr/lib64/nagios/plugins/check_users -w $ARG1$ -c $ARG2$
+command[check_ntp]=/usr/lib64/nagios/plugins/check_ntp -H $HOSTADDRESS$
+command[check_ntp_ntpq]=/usr/lib64/nagios/plugins/check_ntp -H $HOSTADDRESS$ -j 10 -k 15
+command[check_flexlm]=/usr/lib64/nagios/plugins/check_flexlm -F $ARG1$
+command[check_hpjd]=/usr/lib64/nagios/plugins/check_hpjd -H $HOSTADDRESS$ -C public
+command[check_mrtg]=/usr/lib64/nagios/plugins/check_mrtg $ARG1$ 10 AVG $ARG2$ $ARG3$ $ARG4$ $ARG5$ $ARG6$
+command[traffic_average]=/usr/lib64/nagios/plugins/check_mrtgtraf $ARG1$ 10 AVG $ARG2$ $ARG3$ $ARG4$ $ARG5$
+command[check_load]=/usr/lib64/nagios/plugins/check_load $ARG1$ $ARG2$ $ARG3$ $ARG4$ $ARG5$ $ARG6$
+command[check_dns]=/usr/lib64/nagios/plugins/check_dns -H www.yahoo.com -s $HOSTADDRESS$
+command[check_http2]=/usr/lib64/nagios/plugins/check_http -H $ARG1$ -I $HOSTADDRESS$ -w $ARG2$ -c $ARG3$
+command[check_pgsql]=/usr/lib64/nagios/plugins/check_pgsql -H $HOSTADDRESS$ 
+command[check_ping]=/usr/lib64/nagios/plugins/check_ping -H $HOSTADDRESS$ -w 10:20% -c 60:100%
+command[check_procs_zombie]=/usr/lib64/nagios/plugins/check_procs -w $ARG1$ -c $ARG2$ -s Z
+command[check_procs_httpd]=/usr/lib64/nagios/plugins/check_procs -w 5:$ARG1$ -c 1:$ARG2$ -C httpd
+command[check_procs_vsz]=/usr/lib64/nagios/plugins/check_procs -w 8096 -c 16182 -C httpd --metric VSZ
+command[ssh_disk]=/usr/lib64/nagios/plugins/check_by_ssh -H $HOSTADDRESS$ -C '/usr/lib64/nagios/plugins/check_disk -w 85% -c 95% -p $ARG1$'
+
+
+#####################################
+#       add custom service          #
+####################################
+
+command[check_ganglia]=/usr/lib64/nagios/plugins/check_ganglia.py -h {{ ansible_fqdn }} -m $ARG1$ -w $ARG2$ -c $ARG3$
+command[check_apachert]=/usr/lib64/nagios/plugins/check_http -H {{ ansible_fqdn }} -u $ARG1$
+command[check_ports]=/usr/lib64/nagios/plugins/check_tcp -H $ARG1$ -p $ARG2$ -c $ARG3$
+command[check_file_age]=/usr/lib64/nagios/plugins/check_file_age -f $ARG1$ -w $ARG2$ -c $ARG3$
+command[check_procs]=/usr/lib64/nagios/plugins/check_procs -c $ARG1$ -a $ARG2$
+command[check_procs_web_worker]=/usr/lib64/nagios/plugins/check_procs -C $ARG1$ -u $ARG2$ -a $ARG3$ -c 5:8
+command[check_procs_web_master]=/usr/lib64/nagios/plugins/check_procs -C $ARG1$ -u $ARG2$ -a $ARG3$ -c 1:1
+command[check_procs_memory]=/usr/lib64/nagios/plugins/check_procs -a $ARG1$ -r $ARG2$ -c $ARG3$
+command[check_cpu]=/usr/lib64/nagios/plugins/check_cpuuser -w $ARG1$ -c $ARG2$
+command[check_disk]=/usr/lib64/nagios/plugins/check_disk -w $ARG1$ -c $ARG2$ -p $ARG3$
+command[check_http]=/usr/lib64/nagios/plugins/check_http -H $ARG1$ -p $ARG2$ -u $ARG3$
+command[check_memory]=/usr/lib64/nagios/plugins/check_mem.pl -u -w $ARG1$ -c $ARG2$
+command[check_rabbitMQ_queues]=/usr/lib64/nagios/plugins/check_rabbitMQ_queues -f $ARG1$ -w $ARG2$ -c $ARG3$
+command[check_log]=/usr/lib64/nagios/plugins/check_log3.pl -l $ARG1$ -s $ARG2$ -p $ARG3$ -w 9999 -c 1
