@@ -5,6 +5,17 @@
     - ganglia-gmond
   tags: gagnglia-gmond
 
+- name: get cluster name
+  shell:
+    case `echo {{ ansible_hostname }} | awk -F '-' '{print $2}'` in
+    "develop" | "staging" )
+        hostname | awk -F '\\-|\\.' '{print $1 "-" $2}' ;;
+    "production" )
+        hostname | awk -F '\\-|\\.' '{print $1 "-" $2 "-" $3}' ;;
+    esac
+  register: ganglia_cluster_name
+- debug: var=ganglia_cluster_name.stdout
+
 - name: gmond config file
   template: >
      src=gmond.conf.j2
@@ -12,3 +23,16 @@
      owner=root
      group=root
      mode=0644
+  notify: restart gmond
+
+- name: gmond run file
+  shell: pidof /usr/sbin/gmond > /var/run/gmond.pid
+
+- name: gmond init file
+  template: >
+     src=gmond.init.j2
+     dest=/etc/init.d/gmond
+     owner=root
+     group=root
+     mode=0755
+  notify: restart gmond

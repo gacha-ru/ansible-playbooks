@@ -1,1 +1,1 @@
-ganglia_send_metadata_interval: 5
+ganglia_send_metadata_interval: 30

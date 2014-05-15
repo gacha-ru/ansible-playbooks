@@ -5,6 +5,13 @@
     - nrpe
   tags: nagios-nrpe
 
+- name: send plugin files
+  copy: >
+    src=roles/monitoring-agent/nrpe/files/
+    dest=/usr/lib64/nagios/plugins/
+    owner=root
+    mode=755
+
 - name: nrpe config file
   template: >
     src=nrpe.cfg.j2
@@ -12,6 +19,7 @@
     owner=root
     group=root
     mode=0644
+  notify: restart nrpe
 
 - name: nrpe command config file
   template: >
@@ -20,10 +28,4 @@
     owner=root
     group=root
     mode=0644
-
-- name: retrieve the list of home directories
-  copy: >
-    src=roles/monitoring-agent/nrpe/files/
-    dest=/usr/lib64/nagios/plugins/
-    owner=root
-    mode=755
+  notify: restart nrpe

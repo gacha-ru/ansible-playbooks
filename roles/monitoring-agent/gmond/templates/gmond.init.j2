@@ -25,7 +25,7 @@ case "$1" in
       RETVAL=$?
       echo
       [ $RETVAL -eq 0 ] && touch /var/lock/subsys/gmond
-	;;
+    ;;
 
   stop)
       echo -n "Shutting down GANGLIA gmond: "
@@ -33,20 +33,20 @@ case "$1" in
       RETVAL=$?
       echo
       [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/gmond $PIDFILE
-	;;
+    ;;
 
   restart|reload)
-   	$0 stop
-   	$0 start
-   	RETVAL=$?
-	;;
+    $0 stop
+    $0 start
+    RETVAL=$?
+    ;;
   status)
-   	status gmond
-   	RETVAL=$?
-	;;
+    status gmond
+    RETVAL=$?
+    ;;
   *)
-	echo "Usage: $0 {start|stop|restart|status}"
-	exit 1
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 1
 esac
 
 exit $RETVAL
