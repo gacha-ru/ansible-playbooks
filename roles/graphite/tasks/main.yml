@@ -1,0 +1,28 @@
+---
+
+- include: epel.yml
+- include: mysql.yml
+
+- name: install the 'Development tools' package group
+  yum: name="@Development tools" state=present
+
+- name: Install mysql
+  yum: name={{item}} state=installed enablerepo=mysql56-community
+  with_items:
+    - mysql-community-server
+    - mysql-community-devel
+  tags: MySQL
+
+- name: Install graphite
+  yum: name={{item}} state=installed enablerepo=epel
+  with_items:
+    - graphite-web
+    - graphite-web-selinux
+    - python-carbon
+    - python-pip
+  tags: graphite
+
+# Install (MySQL-python) python package.
+- pip: name=MySQL-python
+
+- include: graphite.yml

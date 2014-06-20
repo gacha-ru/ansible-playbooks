@@ -1,0 +1,4 @@
+---
+- name: be sure mysql repository is installed
+  yum: name=http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+  tags: mysql-community-repo
