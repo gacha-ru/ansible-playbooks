@@ -1,0 +1,18 @@
+---
+- name: elasticsearch repo
+  yum: name=https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-1.2.1.noarch.rpm
+  tags: elasticsearch
+
+- name: elasticsearch repofile settings
+  template: >
+     src=elasticsearch.repo.j2
+     dest=/etc/yum.repos.d/elasticsearch.repo
+     owner=root
+     group=root
+     mode=0644
+
+- name: Install elasticsearch
+  yum: name={{item}} state=installed
+  with_items:
+    - elasticsearch
+  tags: elasticsearch

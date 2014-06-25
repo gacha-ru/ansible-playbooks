@@ -15,5 +15,5 @@
      group=root
      mode=0755
 
-- name: gmond run file
-  shell: sh /tmp/init_graphitedb.sh
+#- name: gmond run file
+#  shell: sh /tmp/init_graphitedb.sh

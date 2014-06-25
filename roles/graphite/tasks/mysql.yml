@@ -2,3 +2,14 @@
 - name: be sure mysql repository is installed
   yum: name=http://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
   tags: mysql-community-repo
+
+- name: Install mysql
+  yum: name={{item}} state=installed enablerepo=mysql56-community
+  with_items:
+    - mysql-community-server
+    - mysql-community-devel
+  tags: MySQL
+
+- name: mysql dir chmod
+  shell: |
+    chown -R mysql:mysql /var/lib/mysql
