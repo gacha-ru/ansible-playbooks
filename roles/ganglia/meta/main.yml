@@ -1,4 +1,3 @@
-#---
-#dependencies:
-#  - { role: ganglia/gmetad }
-#  - { role: ganglia/gmond }
+---
+dependencies:
+  - { role: ganglia/gmetad }
