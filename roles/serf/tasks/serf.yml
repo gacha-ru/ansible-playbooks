@@ -1,0 +1,20 @@
+---
+- name: download serf
+  get_url: dest=/tmp/serf_{{ serf_version }}.zip
+           url=https://dl.bintray.com/mitchellh/serf/{{ serf_version }}_linux_amd64.zip
+
+- name: unzip serf
+  unarchive: src=/tmp/serf_{{ serf_version }}.zip
+            dest=/tmp/
+            copy=false
+
+- name: move serf
+  command: mv /tmp/serf /usr/bin/serf
+
+- name: serf filetype
+  file: >
+    dest=/usr/bin/serf
+    owner=root
+    group=root
+    mode=755
+  sudo: yes
