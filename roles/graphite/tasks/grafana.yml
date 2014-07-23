@@ -1,0 +1,34 @@
+---
+- git: repo=https://github.com/grafana/grafana.git
+    dest=/usr/local/src/grafana
+
+- name: grafana dir move
+  shell: |
+    if [ ! -d /var/www/html/grafana ];then
+        mv /usr/local/src/grafana/src /var/www/html/grafana
+    fi
+
+- name: grafana conf.js
+  shell: |
+    curl http://169.254.169.254/latest/meta-data/public-hostname
+  register: public_dns
+- debug: var=public_dns.stdout
+
+- name: grafana config setting
+  template: >
+     src=grafana_config.js.j2
+     dest=/var/www/html/grafana/config.js
+     owner=root
+     group=root
+     mode=0644
+
+- name: grafana apache config setting
+  template: >
+     src=apache_grafana.config.js.j2
+     dest=/etc/httpd/conf.d/grafana.conf
+     owner=root
+     group=root
+     mode=0644
+
+#- name: gmond run file
+#  shell: sh /tmp/init_graphitedb.sh

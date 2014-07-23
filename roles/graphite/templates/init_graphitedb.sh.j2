@@ -1,0 +1,8 @@
+#!/bin/bash
+
+mysql <<EOF
+CREATE USER 'graphite'@'localhost' IDENTIFIED BY 'graphiter';
+GRANT ALL PRIVILEGES ON graphite.* TO 'graphite'@'localhost';
+CREATE DATABASE graphite;
+FLUSH PRIVILEGES;
+EOF

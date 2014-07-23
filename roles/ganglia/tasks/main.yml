@@ -1,5 +1,25 @@
 ---
 
+- name: install ganglia-web dependency package
+  yum: name={{ item }} state=present
+  with_items:
+    - json-c
+    - libXpm
+    - libmemcached
+    - libvpx
+    - libzip
+    - php-ZendFramework
+    - php-pear
+    - php55
+    - php55-bcmath
+    - php55-cli
+    - php55-common
+    - php55-gd
+    - php55-pecl-jsonc
+    - php55-process
+    - php55-xml
+    - t1lib
+
 - name: download ganglia-web source
   get_url: >
     url=http://jaist.dl.sourceforge.net/project/ganglia/ganglia-web/{{ ganglia_web_version }}/ganglia-web-{{ ganglia_web_version }}.tar.gz

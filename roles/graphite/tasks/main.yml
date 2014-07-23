@@ -1,0 +1,25 @@
+---
+
+- include: epel.yml
+
+- name: install the 'Development tools' package group
+  yum: name="@Development tools" state=present
+
+- include: mysql.yml
+
+- name: Install graphite
+  yum: name={{item}} state=installed enablerepo=epel
+  with_items:
+    - graphite-web
+    - graphite-web-selinux
+    - python-carbon
+    - python-pip
+  tags: graphite
+
+# Install (MySQL-python) python package.
+- pip: name=MySQL-python
+
+- include: graphite.yml
+- include: elasticsearch.yml
+- include: grafana.yml
+- include: td-agent.yml
