@@ -2,14 +2,16 @@
 - name: download serf
   get_url: dest=/tmp/serf_{{ serf_version }}.zip
            url=https://dl.bintray.com/mitchellh/serf/{{ serf_version }}_linux_amd64.zip
+  register: result
 
-- name: unzip serf
-  unarchive: src=/tmp/serf_{{ serf_version }}.zip
-            dest=/tmp/
-            copy=false
+- name: unarchive serf
+  command: unzip serf_{{ serf_version }}.zip chdir=/tmp/
+  tags: onece
+  when: result.msg != 'file already exists'
 
 - name: move serf
   command: mv /tmp/serf /usr/bin/serf
+  when: result.msg != 'file already exists'
 
 - name: serf filetype
   file: >
@@ -18,3 +20,22 @@
     group=root
     mode=755
   sudo: yes
+
+- file: path=/var/log/serf state=directory
+- file: path=/etc/serf state=directory
+
+- name: set serf.conf
+  template: >
+     src=serf.conf.j2
+     dest=/etc/serf/serf.conf
+     owner=root
+     group=root
+     mode=0644
+
+- name: set test_serf.sh
+  template: >
+     src=test_serf.sh.j2
+     dest=/etc/serf/test_serf.sh
+     owner=root
+     group=root
+     mode=0755
