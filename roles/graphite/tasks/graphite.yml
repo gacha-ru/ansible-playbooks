@@ -15,5 +15,16 @@
      group=root
      mode=0755
 
-#- name: gmond run file
+- name: graphite-web apache conf
+  template: >
+     src=graphite-web.conf.j2
+     dest=/etc/httpd/conf.d/graphite-web.conf
+     owner=root
+     group=root
+     mode=0755
+#- name: run initdb
 #  shell: sh /tmp/init_graphitedb.sh
+
+- name: Graphite syncdb
+  shell: |
+    /usr/lib/python2.6/site-packages/graphite/manage.py syncdb --noinput

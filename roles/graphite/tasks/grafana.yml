@@ -2,6 +2,11 @@
 - git: repo=https://github.com/grafana/grafana.git
     dest=/usr/local/src/grafana
 
+- name: download some tarball
+  get_url: url={{ grafana_download_url }}
+           dest=/tmp/grafana.tar.gz force=True
+  register: downloaded_tarball
+
 - name: grafana dir move
   shell: |
     if [ ! -d /var/www/html/grafana ];then
@@ -10,7 +15,7 @@
 
 - name: grafana conf.js
   shell: |
-    curl http://169.254.169.254/latest/meta-data/public-hostname
+    curl inet-ip.info
   register: public_dns
 - debug: var=public_dns.stdout
 

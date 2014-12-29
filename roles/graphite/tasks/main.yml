@@ -14,10 +14,13 @@
     - graphite-web-selinux
     - python-carbon
     - python-pip
+    - python-devel
+    - httpd
   tags: graphite
 
 # Install (MySQL-python) python package.
 - pip: name=MySQL-python
+- pip: name=django
 
 - include: graphite.yml
 - include: elasticsearch.yml

@@ -14,5 +14,6 @@
 - name: Install elasticsearch
   yum: name={{item}} state=installed
   with_items:
+    - java
     - elasticsearch
   tags: elasticsearch

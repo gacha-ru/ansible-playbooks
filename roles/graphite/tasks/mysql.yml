@@ -13,3 +13,10 @@
 - name: mysql dir chmod
   shell: |
     chown -R mysql:mysql /var/lib/mysql
+
+- name: mysqld is running and enabled
+  service: name=mysqld state=running enabled=yes
+
+#- name: root password setting
+#  shell: |
+#    /usr/bin/mysqladmin -u root -h localhost.localdomain password '{{ mysql_password }}'

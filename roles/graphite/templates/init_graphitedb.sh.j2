@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mysql <<EOF
+mysql -u root -p{{ mysql_password }} <<EOF
 CREATE USER 'graphite'@'localhost' IDENTIFIED BY 'graphiter';
 GRANT ALL PRIVILEGES ON graphite.* TO 'graphite'@'localhost';
 CREATE DATABASE graphite;
