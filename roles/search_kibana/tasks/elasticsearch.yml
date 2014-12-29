@@ -1,0 +1,22 @@
+---
+- name: elasticsearch repo
+  yum: name=https://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-{{ elasticsearch_varsion }}.noarch.rpm
+  tags: elasticsearch
+
+- name: Install elasticsearch
+  yum: name={{item}} state=installed
+  with_items:
+    - elasticsearch
+    - python-setuptools
+  tags: elasticsearch
+
+- name: Install elasticsearch-plugin
+  shell: |
+    /usr/share/elasticsearch/bin/plugin -install royrusso/elasticsearch-HQ
+    /usr/share/elasticsearch/bin/plugin -install mobz/elasticsearch-head
+  tags: elasticsearch
+
+- easy_install: name=pip
+
+- name: Install curator
+  pip: name=elasticsearch-curator

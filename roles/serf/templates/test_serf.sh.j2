@@ -1,0 +1,19 @@
+#!/bin/sh
+
+event=${SERF_EVENT}
+
+read member
+name=`echo ${member} | cut -d ' ' -f 1`
+addr=`echo ${member} | cut -d ' ' -f 2`
+role=`echo ${member} | cut -d ' ' -f 3`
+
+if [ ${event} = 'member-join' ]; then
+    echo ""
+    echo "member : ${member}"
+    echo "name : ${name}"
+    echo "addr : ${addr}"
+    echo "role : ${role}"
+    echo "${SERF_SELF_NAME}"
+elif [ ${event} = 'member-leave' ] || [ ${event} = 'member-failed' ]; then
+    echo "${SERF_EVENT}"
+fi

@@ -1,0 +1,24 @@
+---
+- name: td-agent repofile settings
+  template: >
+     src=td.repo.j2
+     dest=/etc/yum.repos.d/td.repo
+     owner=root
+     group=root
+     mode=0644
+  tags: td-agent
+
+- name: Install td-agent
+  yum: name={{item}} state=installed
+  with_items:
+    - td-agent
+    - libcurl-devel
+  tags: td-agent
+
+- name: Install plugin
+  shell:
+    /usr/lib64/fluent/ruby/bin/fluent-gem install \
+        fluent-plugin-graphite \
+        fluent-plugin-cloudwatch \
+        fluent-plugin-elasticsearch
+  tags: td-agent

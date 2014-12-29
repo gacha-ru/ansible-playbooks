@@ -1,2 +1,3 @@
 ---
 - include: serf.yml
+- include: supervisord.yml

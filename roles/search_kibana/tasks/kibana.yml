@@ -1,0 +1,17 @@
+---
+- name: Install httpd
+  yum: name={{item}} state=installed
+  with_items:
+    - httpd
+  tags: apache
+
+- name: download kibana
+  get_url: dest=/tmp/kibana-{{ kibana_version }}.zip
+           url=https://download.elasticsearch.org/kibana/kibana/kibana-{{ kibana_version }}.zip
+  register: result
+
+- name: unarchive kibana
+  unarchive: src=/tmp/kibana-{{ kibana_version }}.zip dest=/var/www/html/ copy=no
+
+- name: symlink kibana
+  file: src=/var/www/html/kibana-{{ kibana_version }} dest=/var/www/html/kibana state=link

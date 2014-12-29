@@ -1,0 +1,28 @@
+---
+
+- name: install python-setuptools
+  yum: name={{ item }} state=present
+  with_items:
+    - python-setuptools
+
+# pip install
+-  easy_install: name=pip
+
+# Install (supervisor) python package.
+- pip: name=supervisor
+
+- file: path=/var/log/supervisord state=directory
+- file: path=/etc/supervisord.d state=directory
+
+- name: supervisord.conf file
+  template: >
+     src=supervisord.conf.j2
+     dest=/etc/supervisord.conf
+     owner=root
+     group=root
+     mode=0755
+
+#- name: ganglia-web apache conf mv
+#  shell: |
+#    chdir=/usr/local/src/ganglia-web-{{ ganglia_web_version }}
+#    mv apache.conf /etc/httpd/conf.d/ganglia.conf
